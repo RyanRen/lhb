@@ -11,12 +11,63 @@ import requests
 import sys
 import time
 import json
+import lxml.html
+from lxml import etree
+from pandas.compat import StringIO
 
 REQUEST_TIMEOUT = 10
 REQUEST_RETRY = 3
 REQUEST_SLEEP = 0.001
 
 REQUEST_ERROR_MSG = '重复请求已达最大次数，无法获取数据！'
+
+def LHB_Stock_Details(content, date):
+	
+	content = content.decode('GBK')
+	#print(content)
+	html = lxml.html.parse(StringIO(content))
+	div_list = html.xpath(u"//div[@class=\"content-sepe\"]")
+	# for item in div_list:
+	# 	print(etree.tostring(item).decode('utf-8'))
+
+	for item_div in div_list:
+		table_list = item_div.xpath(u"./table/tbody")
+		#print("table count %d"%(len(table_list)))
+		for item_t in table_list:
+			#print('-------print table content-------')
+			#print(etree.tostring(item_t).decode('utf-8'))
+			#item_t = lxml.html.parse(StringIO(etree.tostring(item_t).decode('utf-8')))
+			row_list = item_t.xpath(u"./tr")		
+			#print('row count %d'%(len(row_list)))
+			for item_row in row_list:
+				colume_list = item_row.xpath('./td')
+				
+				#print(len(colume_list))
+				if len(colume_list) == 7:
+					
+					#print(colume_list[0].text)
+					#营业部名称
+					print((colume_list[1].xpath("./div[@class=\"sc-name\"]/a"))[1].text)
+					#营业部代码
+					#item = colume_list[1].xpath("./div/input")
+					print(colume_list[1].xpath("./div/input")[0].attrib['value'])
+					if colume_list[1].xpath("./div/input")[0].attrib['value'] == '':
+						print("机构席位10000")
+					#买入金额（万）
+					print(colume_list[2].text)
+					if(colume_list[2] == None):
+						BMoney = 0
+
+					#买入占比
+					print(colume_list[3].text)
+
+					#卖出金额（万）
+					print(colume_list[4].text)
+
+					#卖出占比
+					print(colume_list[5].text)
+
+	return
 
 def LHB_Stock_Info(content, date):
 	if content == None:
@@ -40,10 +91,12 @@ def LHB_Stock_Info(content, date):
 					try:
 						res = requests.get(url, timeout=REQUEST_TIMEOUT)
 						#res = requests.get(url, timeout=0.001)
+
 					except requests.exceptions.RequestException as e:
-						print(e)
+						print("第%d次获取失败%s"%(_+1,e))
 					else:			
 						print('成功获取股票代码%s:%s当天的龙虎榜数据！'%(SCode,date))
+						LHB_Stock_Details(res.content, date)
 						break
 					if _==2:
 						print('经过多次尝试：无法获取股票代码%s:%s当天的龙虎榜数据！'%(SCode,date))
