@@ -128,6 +128,11 @@ def LHB_Daily_Sumary(date):
 
 
 if __name__ == '__main__':
+	print(sys.version_info[0])
+	if sys.version_info[0] < 3:
+	    reload(sys)
+	    sys.setdefaultencoding('utf-8')
+	
 	print('龙虎榜数据分析程序V1.0')
 
 	data = LHB_Daily_Sumary('2018-07-26')
