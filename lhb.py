@@ -6,15 +6,53 @@
 # lhb.py @ v0.1
 # Ryan @ 2018/07/26
 
+#issue list:
+#1. 分析龙虎榜每日概况，请求每个个股龙虎榜信息(OK)
+#2. 解析个股龙虎榜信息
+#3. 将龙虎榜信息写入数据库
+#4. 有当天往前，请求往日所有的龙虎榜信息。
+
 import requests
 import sys
 import time
+import json
 
 REQUEST_TIMEOUT = 10
 REQUEST_RETRY = 3
 REQUEST_SLEEP = 0.001
 
 REQUEST_ERROR_MSG = '重复请求已达最大次数，无法获取数据！'
+
+def LHB_Stock_Info(content, date):
+	if content == None:
+		print('Content load is empty, quit!')
+		return 
+	else:
+		json_raw = content[content.find('_1=')+3:]
+		#print(json_raw)
+		json_Dict = json.loads(json_raw, encoding='utf-8')
+		#print(json_Dict)
+		if json_Dict['data'] != '':
+			for item in json_Dict['data']:
+				SCode = item['SCode']
+				#print('**股票%s**上榜原因:%s'%(item['SCode'], item['Ctypedes']))
+				#龙虎榜个股信息URL：http://data.eastmoney.com/stock/lhb,2018-07-26,600186.html
+				LHB_STOCK_URL = '%sdata.%s/stock/lhb,%s,%s.html'
+				url = LHB_STOCK_URL%('http://', 'eastmoney.com', date, SCode)
+				#print(url)
+				for _ in range(REQUEST_RETRY):
+					time.sleep(REQUEST_SLEEP)
+					try:
+						res = requests.get(url, timeout=REQUEST_TIMEOUT)
+						#res = requests.get(url, timeout=0.001)
+					except requests.exceptions.RequestException as e:
+						print(e)
+					else:			
+						print('成功获取股票代码%s:%s当天的龙虎榜数据！'%(SCode,date))
+						break
+					if _==2:
+						print('经过多次尝试：无法获取股票代码%s:%s当天的龙虎榜数据！'%(SCode,date))
+	return
 
 
 def LHB_Daily_Sumary(date):
@@ -46,6 +84,7 @@ if __name__ == '__main__':
 
 	data = LHB_Daily_Sumary('2018-07-26')
 	#print(data)
+	LHB_Stock_Info(data, '2018-07-26')
 	
 	sys.exit(0)
 
