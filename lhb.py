@@ -14,6 +14,7 @@ import json
 import lxml.html
 from lxml import etree
 from pandas.compat import StringIO
+from datetime import date, timedelta
 
 REQUEST_TIMEOUT = 10
 REQUEST_RETRY = 3
@@ -132,17 +133,34 @@ def LHB_Daily_Sumary(date):
 def DB_Setup():
     return
 
+def LHB_Start():
+    m_date = date.today()
+    history = date(2000,1,1)   
+
+    while history < m_date:        
+
+        if m_date.weekday() > 4:
+            m_date = m_date - timedelta(days=1)
+            continue
+
+        data = LHB_Daily_Sumary(m_date.__str__())
+        #print(data)
+        LHB_Stock_Info(data, m_date.__str__())
+        m_date = m_date - timedelta(days=1)
+        
+
+
 
 if __name__ == '__main__':
-    print(sys.version_info[0])
+    
     if sys.version_info[0] < 3:
         reload(sys)
         sys.setdefaultencoding('utf-8')
 
     print('龙虎榜数据分析程序V1.0')
 
-    data = LHB_Daily_Sumary('2018-07-26')
-    # print(data)
-    LHB_Stock_Info(data, '2018-07-26')
+    
+
+    LHB_Start()
 
     sys.exit(0)
