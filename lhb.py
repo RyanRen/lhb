@@ -12,7 +12,6 @@ import sys
 import time
 import json
 import lxml.html
-from lxml import etree
 from pandas.compat import StringIO
 import MySQLdb
 from datetime import date, timedelta
@@ -133,37 +132,34 @@ def LHB_Daily_Sumary(date):
 
 
 def DB_Setup():
-	DBConnection = MySQLdb.connect(
-	    'localhost', 'ryan', 'renyan', 'lhbDB', charset='utf8')
-	return
+    DBConnection = MySQLdb.connect(
+        'localhost', 'ryan', 'renyan', 'LHB_DB', charset='utf8')
+    return
+
 
 def LHB_Start():
     m_date = date.today()
-    history = date(2000,1,1)   
+    history = date(2000, 1, 1)
 
-    while history < m_date:        
+    while history < m_date:
 
         if m_date.weekday() > 4:
             m_date = m_date - timedelta(days=1)
             continue
 
         data = LHB_Daily_Sumary(m_date.__str__())
-        #print(data)
+        # print(data)
         LHB_Stock_Info(data, m_date.__str__())
         m_date = m_date - timedelta(days=1)
-        
-
 
 
 if __name__ == '__main__':
-    
+
     if sys.version_info[0] < 3:
         reload(sys)
         sys.setdefaultencoding('utf-8')
 
     print('龙虎榜数据分析程序V1.0')
-
-    
 
     LHB_Start()
 
