@@ -14,11 +14,9 @@ import json
 import lxml.html
 from lxml import etree
 from pandas.compat import StringIO
-<<<<<<< HEAD
 import MySQLdb
-=======
 from datetime import date, timedelta
->>>>>>> 115cbbff7a5b3a90dc3e2865b50e6b935df8457a
+
 
 REQUEST_TIMEOUT = 10
 REQUEST_RETRY = 3
