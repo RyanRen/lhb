@@ -14,6 +14,7 @@ import json
 import lxml.html
 from lxml import etree
 from pandas.compat import StringIO
+import MySQLdb
 
 REQUEST_TIMEOUT = 10
 REQUEST_RETRY = 3
@@ -32,13 +33,13 @@ def LHB_Stock_Details(content, date):
 
     for item_div in div_list:
         table_list = item_div.xpath(u"./table/tbody")
-        #print("table count %d"%(len(table_list)))
+        # print("table count %d"%(len(table_list)))
         for item_t in table_list:
-            #print('-------print table content-------')
+            # print('-------print table content-------')
             # print(etree.tostring(item_t).decode('utf-8'))
-            #item_t = lxml.html.parse(StringIO(etree.tostring(item_t).decode('utf-8')))
+            # item_t = lxml.html.parse(StringIO(etree.tostring(item_t).decode('utf-8')))
             row_list = item_t.xpath(u"./tr")
-            #print('row count %d'%(len(row_list)))
+            # print('row count %d'%(len(row_list)))
             for item_row in row_list:
                 colume_list = item_row.xpath('./td')
 
@@ -50,7 +51,7 @@ def LHB_Stock_Details(content, date):
                     print((colume_list[1].xpath(
                         "./div[@class=\"sc-name\"]/a"))[1].text)
                     # 营业部代码
-                    #item = colume_list[1].xpath("./div/input")
+                    # item = colume_list[1].xpath("./div/input")
                     print(colume_list[1].xpath(
                         "./div/input")[0].attrib['value'])
                     if colume_list[1].xpath("./div/input")[0].attrib['value'] == '':
@@ -84,7 +85,7 @@ def LHB_Stock_Info(content, date):
         if json_Dict['data'] != '':
             for item in json_Dict['data']:
                 SCode = item['SCode']
-                #print('**股票%s**上榜原因:%s'%(item['SCode'], item['Ctypedes']))
+                # print('**股票%s**上榜原因:%s'%(item['SCode'], item['Ctypedes']))
                 # 龙虎榜个股信息URL：http://data.eastmoney.com/stock/lhb,2018-07-26,600186.html
                 LHB_STOCK_URL = '%sdata.%s/stock/lhb,%s,%s.html'
                 url = LHB_STOCK_URL % ('http://', 'eastmoney.com', date, SCode)
@@ -93,7 +94,7 @@ def LHB_Stock_Info(content, date):
                     time.sleep(REQUEST_SLEEP)
                     try:
                         res = requests.get(url, timeout=REQUEST_TIMEOUT)
-                        #res = requests.get(url, timeout=0.001)
+                        # res = requests.get(url, timeout=0.001)
 
                     except requests.exceptions.RequestException as e:
                         print("第%d次获取失败%s" % (_ + 1, e))
@@ -130,7 +131,9 @@ def LHB_Daily_Sumary(date):
 
 
 def DB_Setup():
-    return
+	DBConnection = MySQLdb.connect(
+	    'localhost', 'ryan', 'renyan', 'lhbDB', charset='utf8')
+	return
 
 
 if __name__ == '__main__':
