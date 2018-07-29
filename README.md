@@ -4,6 +4,7 @@
 issue list:  
 
 Data accquiring:  
+- load json exception handle  
 - how to avoid insert duplicated record?  
 - no ammount? cannot get the average price  
 - MARCRO definitions    
