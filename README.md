@@ -1,9 +1,24 @@
-# lhb
-龙虎榜
+# lhb  
+龙虎榜  
 
-issue list:
-分析龙虎榜每日概况，请求每个个股龙虎榜信息(OK)  
-解析个股龙虎榜信息 OK  
-数据库配置，连接  
-数据库写入龙虎榜信息  
-有当天往前，请求往日所有的龙虎榜信息 ok  
+issue list:  
+
+Data accquiring:  
+- how to avoid insert duplicated record?  
+- no ammount? cannot get the average price  
+- MARCRO definitions    
+- modify the application to DEAMON, background running mode  
+- is there has override?  
+- error log file  
+
+Data Washing:  
+- remove the duplicated data  
+
+DataMining:
+- find most rich YYB
+- find relationship YYB
+- find most win rate YYB
+- find YYB trading mode
+
+Application:
+- show the stock K-line with recording, showing the relationships

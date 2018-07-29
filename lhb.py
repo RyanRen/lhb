@@ -109,10 +109,11 @@ def LHB_Stock_Details(content, date, SCode, DBConnection):
         #print(insert)
         cursor.execute(insert)
     except Exception:
-    	print("%s, %s, %s, %s"%(colume_list[2].text, colume_list[3].text, colume_list[4].text, colume_list[5].text))
-    	print("%s, %s, %s, %s"%(BUY, BRATE, SELL, SRATE))
-    	print(insert)
+    	#print("%s, %s, %s, %s"%(colume_list[2].text, colume_list[3].text, colume_list[4].text, colume_list[5].text))
+    	#print("%s, %s, %s, %s"%(BUY, BRATE, SELL, SRATE))
+    	#print(insert)
     	#DBConnection.roolback()
+    	pass
     else:
     	cursor.close()
         DBConnection.commit()
@@ -143,14 +144,14 @@ def LHB_Stock_Info(content, date, DBConnection):
                         # res = requests.get(url, timeout=0.001)
 
                     except requests.exceptions.RequestException as e:
-                        print("第%d次获取失败%s" % (_ + 1, e))
+                        #print("第%d次获取失败%s" % (_ + 1, e))
                     else:
-                        print('成功获取股票代码%s:%s当天的龙虎榜数据！' % (SCode, date))
+                        #print('成功获取股票代码%s:%s当天的龙虎榜数据！' % (SCode, date))
                         LHB_Stock_Details(res.content, date,
                                           SCode, DBConnection)
                         break
                     if _ == REQUEST_RETRY:
-                        print('经过多次尝试：无法获取股票代码%s:%s当天的龙虎榜数据！' % (SCode, date))
+                        #print('经过多次尝试：无法获取股票代码%s:%s当天的龙虎榜数据！' % (SCode, date))
     return
 
 
@@ -169,11 +170,12 @@ def LHB_Daily_Sumary(date):
             # print(str(_+1)+'次尝试请求')
             res = requests.get(url, timeout=REQUEST_TIMEOUT)
         except requests.exceptions.RequestException as e:
-            print(e)
+            #print(e)
+            pass
         else:
-            print('成功获取' + date + '数据！')
+            #print('成功获取' + date + '数据！')
             return res.text
-    print(REQUEST_ERROR_MSG)
+    #print(REQUEST_ERROR_MSG)
     return None
 
 
