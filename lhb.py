@@ -149,7 +149,7 @@ def LHB_Stock_Info(content, date, DBConnection):
                         LHB_Stock_Details(res.content, date,
                                           SCode, DBConnection)
                         break
-                    if _ == 2:
+                    if _ == REQUEST_RETRY:
                         print('经过多次尝试：无法获取股票代码%s:%s当天的龙虎榜数据！' % (SCode, date))
     return
 
