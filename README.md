@@ -4,13 +4,12 @@
 issue list:  
 
 Data accquiring:  
-- load json exception handle  
 - how to avoid insert duplicated record?  
 - no ammount? cannot get the average price  
 - MARCRO definitions    
-- modify the application to DEAMON, background running mode  
 - is there has override?  
 - error log file  
+- successfully running on aliyun platform  
 
 Data Washing:  
 - remove the duplicated data  

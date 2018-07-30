@@ -8,7 +8,7 @@
 
 
 import requests
-import sys,os
+import sys, os
 import time
 import json
 import lxml.html

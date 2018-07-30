@@ -126,7 +126,7 @@ def daemon_status():
         if len(pl) > 0:
             print('Daemon process is running with pid %d' % (pid))
         else:
-            print('Daemon process is not running( not found process with pid %d)', pid)
+            print('Daemon process is not running( not found process with pid %d)'%(pid))
     else:
         print('Daemon process is not running!')
 
