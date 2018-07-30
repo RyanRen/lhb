@@ -8,7 +8,7 @@
 
 
 import requests
-import sys
+import sys,os
 import time
 import json
 import lxml.html
@@ -224,16 +224,20 @@ def LHB_Start(DBConnection):
         m_date = m_date - timedelta(days=1)
     return
 
+def LHBDemo(logger):
+    for _ in range(300):
+        time.sleep(1)
+        logger.info('daeomn process %d'%(os.getpid()))
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
 
-    if sys.version_info[0] < 3:
-        reload(sys)
-        sys.setdefaultencoding('utf-8')
+#     if sys.version_info[0] < 3:
+#         reload(sys)
+#         sys.setdefaultencoding('utf-8')
 
-    print('龙虎榜数据分析程序V1.0')
+#     print('龙虎榜数据分析程序V1.0')
 
-    hDB = DB_Setup()
-    LHB_Start(hDB)
+#     hDB = DB_Setup()
+#     LHB_Start(hDB)
 
-    sys.exit(0)
+#     sys.exit(0)
