@@ -23,6 +23,7 @@ DataMining:
 Application:
 - show the stock K-line with recording, showing the relationships
 
+
 Daemon  
 - create daemon mode  
 - create daemon start/stop mode  
