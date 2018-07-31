@@ -56,7 +56,8 @@ def daemon_init(stdin='/dev/null', stdout='/dev/null', stderr='/dev/null'):
         fs.close()
 
     # lhb task entry
-    lhb.LHBDemo(logger)
+    hDB = lhb.DB_Setup()
+    lhb.LHB_Start(hDB)
 
     os.remove('/tmp/daemon_lhb.pid')
 

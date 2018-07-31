@@ -35,13 +35,13 @@ def LHB_Stock_Details(content, date, SCode, DBConnection):
     # for item in div_list:
     # 	print(etree.tostring(item).decode('utf-8'))
     if(len(div_list) < 1):
-        print("Not find LHB Table")
+        sys.stdout.write("Not find LHB Table\n")
         return
 
     for item_div in div_list:
         table_list = item_div.xpath(u"./table/tbody")
         if (len(table_list) < 1):
-            print("Not find LHB table")
+            sys.stdout.write("Not find LHB table\n")
             continue
 
         # print("table count %d"%(len(table_list)))
@@ -51,7 +51,7 @@ def LHB_Stock_Details(content, date, SCode, DBConnection):
 
             row_list = item_t.xpath(u"./tr")
             if (len(row_list) < 1):
-                print("Not find LHB YYB Item")
+                sys.stdout.write("Not find LHB YYB Item\n")
                 continue
 
             # print('row count %d'%(len(row_list)))
@@ -123,25 +123,44 @@ def LHB_Stock_Details(content, date, SCode, DBConnection):
 
 def LHB_Stock_Info(content, date, DBConnection):
     if content == None:
-        print('Content load is empty, quit!')
+        sys.stdout.write('Content load is empty, quit!\n')
         return
     else:
         content = content.decode('GBK')
         json_raw = content[content.find('_1=') + 3:]
         if json_raw == '':
-            print("LHB json content error")
+            sys.stdout.write("LHB json content error\n")
             return
         try:
             json_Dict = json.loads(json_raw, encoding='utf-8')
         except Exception as e:
             print(e)
-            print(json_raw)
+            #print(json_raw)
             return
 
         # print(json_Dict)
         if json_Dict['data'] != '':
             for item in json_Dict['data']:
                 SCode = item['SCode']
+
+                #check allready exist record
+                sql = 'SELECT * FROM LHB WHERE LHBDATE = \'%s\' AND SCode = %s'%(date, SCode)
+                #sys.stdout.write('%s\n'%(sql))
+
+                cursor = DBConnection.cursor()
+
+                try:
+                    cursor.execute(sql)
+                except Exception as e:
+                    sys.stderr.write('sql error')
+                else:
+                    #cursor.fetchall()
+                    #sys.stdout.write('get %d records in database\n'%(int(cursor.rowcount)))
+                    if int(cursor.rowcount) > 0:
+                        sys.stdout.write('Already exist record on %s:%s, not to request...\n'%(date, SCode))
+                        cursor.close()
+                        continue
+
                 # print('**股票%s**上榜原因:%s'%(item['SCode'], item['Ctypedes']))
                 # 龙虎榜个股信息URL：http://data.eastmoney.com/stock/lhb,2018-07-26,600186.html
                 LHB_STOCK_URL = '%sdata.%s/stock/lhb,%s,%s.html'
@@ -157,7 +176,7 @@ def LHB_Stock_Info(content, date, DBConnection):
                         #print("第%d次获取失败%s" % (_ + 1, e))
                         pass
                     else:
-                        print('成功获取股票代码%s:%s当天的龙虎榜数据！' % (SCode, date))
+                        sys.stdout.write('成功获取股票代码%s:%s当天的龙虎榜数据！\n' % (SCode, date))
                         LHB_Stock_Details(res.content, date,
                                           SCode, DBConnection)
                         break
@@ -168,7 +187,7 @@ def LHB_Stock_Info(content, date, DBConnection):
 
 
 def LHB_Daily_Sumary(date):
-    print('请求' + date + '龙虎榜信息...')
+    sys.stdout.write('请求' + date + '龙虎榜信息...\n')
 
     # 龙虎榜URL，样例：http://data.eastmoney.com/DataCenter_V3/stock2016/TradeDetail/pagesize=200,page=1,sortRule=-1,sortType=,startDate=2018-07-20,endDate=2018-07-20,gpfw=0,js=vardata_tab_1.html
     LHB_URL = '%sdata.%s/DataCenter_V3/stock2016/TradeDetail/pagesize=200,page=1,sortRule=-1,sortType=,startDate=%s,endDate=%s,gpfw=0,js=vardata_tab_1.html'
@@ -185,7 +204,7 @@ def LHB_Daily_Sumary(date):
             # print(e)
             pass
         else:
-            print('成功获取' + date + '数据！')
+            sys.stdout.write('成功获取' + date + '数据！\n')
             return res.content
     # print(REQUEST_ERROR_MSG)
     return None
@@ -204,7 +223,7 @@ def DB_Setup():
     cursor.execute(CreateLHBTable)
     DBConnection.commit()
 
-    cursor.close
+    cursor.close()
     return DBConnection
 
 
